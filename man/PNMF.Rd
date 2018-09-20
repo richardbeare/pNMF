@@ -4,11 +4,18 @@
 \alias{PNMF}
 \title{Projective nonnegative matrix factorization}
 \usage{
-PNMF(X, nmfMod, tol = 1e-05, maxIter = 500, timeLimit = 300,
-  checkDivergence = TRUE)
+PNMF(X, nmfMod, tol = 1e-05, maxIter = 500, verbose = FALSE)
 }
 \arguments{
-\item{checkDivergence}{}
+\item{X}{Input data matrix}
+
+\item{nmfMod}{NMF model from the NMF package}
+
+\item{tol}{tolerance for stopping criteria}
+
+\item{maxIter}{Maximum number of iterations}
+
+\item{verbose}{Print status messages}
 }
 \value{
 Fitted NMF model, as defined in NMF package.
@@ -17,6 +24,15 @@ Fitted NMF model, as defined in NMF package.
 Projective nonnegative matrix factorization
 }
 \examples{
-NMF::register(PNMF)
-
+setNMFMethod("PNMF", pNMF::PNMF)
+mkD <- function(NOISE=TRUE) {
+  n <- 1000 # rows
+  counts <- c(30, 10, 20, 10, 15, 15) # samples
+  syntheticNMF(n=n, r=counts, offset = NULL, noise = NOISE,
+               factors = FALSE, seed = 99)
+}
+k<-mkD()
+V.random <- randomize(k)
+estim.r2 <- nmf(k, 2:20, method="PNMF", nrun=30)
+estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 }
