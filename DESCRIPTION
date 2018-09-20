@@ -11,6 +11,8 @@ Maintainer: Richard Beare <Richard.Beare@mcri.edu.au>
 Description: Projective non-negative matrix factorization method from 
  "Linear and Nonlinear Projective Nonnegative Matrix Factorization", Z. Yang and E. Oja, IEEE Transactions on Neural Networks. Derived from
  matlab code by Z. Yang, https://sites.google.com/site/zhirongyangcs/pnmf.
+Imports: NMF
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.0
