@@ -1,6 +1,9 @@
 
-#' Projective nonnegative matrix factorization
+#' Projective nonnegative matrix factorization based on euclidean distance.
 #'
+#' @details Implementation of "Linear and Nonlinear Projective Nonnegative Matrix Factorization",
+#' Z. Yang and E. Oja, IEEE Transactions on Neural Networks. Derived from
+#' matlab code by Z. Yang, https://sites.google.com/site/zhirongyangcs/pnmf.
 #' @param X Input data matrix
 #' @param nmfMod NMF model from the NMF package
 #' @param tol tolerance for stopping criteria
@@ -55,4 +58,41 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
   NMF::basis(nmfMod) <- W
   NMF::coef(nmfMod) <- crossprod(W, X)
   return(nmfMod)
+}
+
+#' Projective nonnegative matrix factorization based on I-divergence (non-nomarlized KL-divergence)
+#'
+#' @param X Input data matrix
+#' @param nmfMod NMF model from the NMF package
+#' @param tol tolerance for stopping criteria
+#' @param maxIter Maximum number of iterations
+#' @param verbose Print status messages
+#' @return Fitted NMF model, as defined in NMF package.
+#' @export
+#'
+#' @importFrom NMF basis coef
+
+#' @examples
+PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
+  W <- NMF::basis(nmfMod)
+  Xsum <- rowSums(X)
+
+  for (iter in 1:maxIter) {
+    W_old <- W
+
+    # matlab version
+    #Z = X ./ (W*(W'*X));
+    #W = W .* sqrt((Z*(X'*W) +X*(Z'*W)) ...
+    #                            ./ bsxfun(@plus, Xsum'*W, bsxfun(@times, Xsum, sum(W))));
+
+    #diffW = norm(W_old-W, 'fro') / norm(W_old, 'fro');
+    Z <- X/((W %*% crossprod(W, X)))
+    denom <- Xsum * colSums(W)
+    W <- W * sqrt((Z %*% crossprod(X, W) + X %*% crossprod(Z, W)))/denom
+    if (diffW<tol) {
+      cat("Converged after ", iter , " steps.\n")
+      break;
+    }
+
+  }
 }
