@@ -1,0 +1,16 @@
+Package: pNMF
+Type: Package
+Title: Projective non-negative matrix factorization
+Version: 0.1.0
+Author: Richard Beare, Gareth Ball
+Authors@R: c(person("Richard", "Beare", role = c("aut", "cre"),
+                      email = "Richard.Beare@mcri.edu.au"),
+                   person("Gareth", "Ball", role = c("aut", "cre"),
+                     email = "Gareth.Ball@mcri.edu.au"))
+Maintainer: Richard Beare <Richard.Beare@mcri.edu.au>
+Description: Projective non-negative matrix factorization method from 
+ "Linear and Nonlinear Projective Nonnegative Matrix Factorization", Z. Yang and E. Oja, IEEE Transactions on Neural Networks. Derived from
+ matlab code by Z. Yang, https://sites.google.com/site/zhirongyangcs/pnmf.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
