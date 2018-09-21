@@ -12,8 +12,9 @@
 #' @return Fitted NMF model, as defined in NMF package.
 #' @export
 #'
-#' @importFrom NMF basis coef
+#' @importFrom NMF basis coef NMFStrategy
 #' @examples
+#' library(NMF)
 #' setNMFMethod("PNMF", pNMF::PNMF)
 #' mkD <- function(NOISE=TRUE) {
 #'   n <- 1000 # rows
@@ -22,9 +23,12 @@
 #'                factors = FALSE, seed = 99)
 #' }
 #' k<-mkD()
+#' estim <- nmf(k, 6, method="PNMF", nrun=1)
+#' \dontrun{
 #' V.random <- randomize(k)
 #' estim.r2 <- nmf(k, 2:20, method="PNMF", nrun=30)
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
+#' }
 
 PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
   # Initialization
@@ -60,7 +64,7 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
   return(nmfMod)
 }
 
-#' Projective nonnegative matrix factorization based on I-divergence (non-nomarlized KL-divergence)
+#' Projective nonnegative matrix factorization based on I-divergence (non-nomalized KL-divergence)
 #'
 #' @param X Input data matrix
 #' @param nmfMod NMF model from the NMF package
@@ -70,16 +74,31 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
 #' @return Fitted NMF model, as defined in NMF package.
 #' @export
 #'
-#' @importFrom NMF basis coef
+#' @importFrom NMF basis coef NMFStrategy
 
 #' @examples
+#' library(NMF)
+#' NMF::setNMFMethod("PNMFKL", pNMF::PNMFKL)
+#' mkD <- function(NOISE=TRUE) {
+#'   n <- 1000 # rows
+#'   counts <- c(30, 10, 20, 10, 15, 15) # samples
+#'   syntheticNMF(n=n, r=counts, offset = NULL, noise = NOISE,
+#'                factors = FALSE, seed = 99)
+#' }
+#' k<-mkD()
+#' estim <- nmf(k, 6, method="PNMFKL", nrun=1)
+#'
+#' \dontrun {
+#' V.random <- randomize(k)
+#' estim.r2 <- nmf(k, 2:20, method="PNMFKL", nrun=30)
+#' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
+#' }
 PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
   W <- NMF::basis(nmfMod)
   Xsum <- rowSums(X)
-
+  dim(Xsum) <- c(nrow(X), 1)
   for (iter in 1:maxIter) {
     W_old <- W
-
     # matlab version
     #Z = X ./ (W*(W'*X));
     #W = W .* sqrt((Z*(X'*W) +X*(Z'*W)) ...
@@ -87,12 +106,24 @@ PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
 
     #diffW = norm(W_old-W, 'fro') / norm(W_old, 'fro');
     Z <- X/((W %*% crossprod(W, X)))
-    denom <- Xsum * colSums(W)
-    W <- W * sqrt((Z %*% crossprod(X, W) + X %*% crossprod(Z, W)))/denom
+    ## slightly messy in order to implement bsxfun without extra stuff
+    ## bsxfun(@times, Xsum, sum(W))
+    sW <- colSums(W)
+    dim(sW) <- c(1, ncol(W))
+    bsxfuntimes <- Xsum %*% sW
+    XW <- as.vector(crossprod(Xsum, W))
+    bsxfunplus <- sweep(bsxfuntimes, MARGIN=2, STATS=XW, FUN="+")
+    W <- W * sqrt((Z %*% crossprod(X, W) + X %*% crossprod(Z, W)))/bsxfunplus
+    diffW <- norm(W_old - W, "F")/norm(W_old, "F")
     if (diffW<tol) {
-      cat("Converged after ", iter , " steps.\n")
+      if (verbose) {
+        cat("Converged after ", iter , " steps.\n")
+      }
       break;
     }
-
   }
+  gc()
+  NMF::basis(nmfMod) <- W
+  NMF::coef(nmfMod) <- crossprod(W, X)
+  return(nmfMod)
 }
