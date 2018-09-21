@@ -2,6 +2,7 @@
 
 export(PNMF)
 export(PNMFKL)
+export(PNMFO)
 importFrom(NMF,NMFStrategy)
 importFrom(NMF,basis)
 importFrom(NMF,coef)
