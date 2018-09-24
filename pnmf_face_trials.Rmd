@@ -1,0 +1,84 @@
+---
+title: "Testing PNMF"
+author: "Richard Beare"
+date: "22/09/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk("pnmf_face_trials.R")
+```
+
+# Trials of the various PNMF functions
+
+Idea is to test out the various initialization/seeding options and confirm that each 
+variation is behaving sensibly. The test set will be a face dataset, as the expected
+components are easy to interpret.
+
+Expect the document to take a long time to run.
+
+Note - NMF installed from github:
+
+```{r, eval=FALSE}
+devtools::install_github("renozao/NMF")
+```
+
+
+## Setup
+
+Register the non-core methods (i.e. ones that don't come with NMF) so that they work in the
+NMF framework. Load the face data.
+
+```{r Setup}
+
+```
+
+The following NMF tools are available:
+```{r Choices}
+
+```
+
+
+## Check the faces
+
+Select a random 16 faces and display them - prove that they really are faces. Note that there is some inverting
+in the plotting commands
+
+```{r RandomFaces}
+
+```
+## Run some established methods
+
+ICA and SVD seeds
+
+```{r Brunet, cache=TRUE}
+
+```
+
+Random seeds
+
+```{r BrunetRandomSeed}
+
+```
+
+
+### Brunet, ICA seed
+
+```{r BrunetPlotICA}
+
+```
+
+### Brunet, nonnegative double singular value decomposition
+
+```{r BrunetPlotNNDSVD}
+
+```
+
+### Brunet, random seed, 20 runs
+
+```{r BrunetPlotRandom}
+
+```
+
+
