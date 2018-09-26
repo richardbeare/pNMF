@@ -21,7 +21,7 @@ Expect the document to take a long time to run.
 Note - NMF installed from github:
 
 ```{r, eval=FALSE}
-devtools::install_github("renozao/NMF")
+devtools::install_github("richardbeare/NMF", ref="ArrayWarning")
 ```
 
 
@@ -58,10 +58,14 @@ ICA and SVD seeds
 
 Random seeds
 
-```{r BrunetRandomSeed}
+```{r BrunetRandomSeed, cache=TRUE}
 
 ```
 
+Offset method (Badea, 2009, modification to Lee and Seung)
+```{r Offset, cache=TRUE}
+
+```
 
 ### Brunet, ICA seed
 
@@ -81,4 +85,24 @@ Random seeds
 
 ```
 
+### Offset, ICA seed
+
+```{r OffsetPlotICA}
+
+```
+
+### Offset, nonnegative double singular value decomposition
+
+```{r OffsetPlotNNDSVD}
+
+```
+
+### Brunet, random seed, 20 runs
+
+```{r OffsetPlotRandom}
+
+```
+
+
+## Projective methods
 
