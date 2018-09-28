@@ -4,7 +4,7 @@
 \alias{PNMFO}
 \title{Projective orthonormal nonnegative matrix factorization based on euclidean distance.}
 \usage{
-PNMFO(X, nmfMod, tol = 1e-05, maxIter = 500, verbose = FALSE)
+PNMFO(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
 }
 \arguments{
 \item{X}{Input data matrix}

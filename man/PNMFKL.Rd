@@ -4,7 +4,7 @@
 \alias{PNMFKL}
 \title{Projective nonnegative matrix factorization based on I-divergence (non-nomalized KL-divergence)}
 \usage{
-PNMFKL(X, nmfMod, tol = 1e-05, maxIter = 500, verbose = FALSE)
+PNMFKL(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
 }
 \arguments{
 \item{X}{Input data matrix}

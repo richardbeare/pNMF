@@ -30,7 +30,7 @@
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 #'}
 
-PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
+PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
   # Initialization
   #startTime <- proc.time()[3]
   W <- NMF::basis(nmfMod)
@@ -95,7 +95,7 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 #'}
 
-PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
+PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
   # Initialization
   #startTime <- proc.time()[3]
   W <- NMF::basis(nmfMod)
@@ -156,7 +156,7 @@ PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 #'}
 #'
-PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 500, verbose=FALSE) {
+PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
   W <- NMF::basis(nmfMod)
   Xsum <- rowSums(X)
   dim(Xsum) <- c(nrow(X), 1)

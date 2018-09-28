@@ -35,3 +35,36 @@ NMFimage2df <- function(nmfimage, rs, cs) {
   nn <- dplyr::left_join(nn, coords, by="PixelID")
   nn
 }
+
+#' Plotting for Frigyesi rank selection method
+#'
+#'
+#' @param orig result of a rank selection run on original data
+#' @param random result of a rank selection run on randomised data
+#'
+#' @return a ggplot object
+#' @export
+#'
+#' @examples
+#'\dontrun{
+#'   mkD <- function(NOISE=TRUE) {
+#'   n <- 1000 # features
+#'   counts <- c(30, 10, 20, 10, 15, 15) # samples
+#'   syntheticNMF(n=n, r=counts, offset = NULL, noise = NOISE,
+#'                factors = FALSE, seed = 99)
+#'  }
+#'  k<-mkD()
+#'  V.random <- randomize(k)
+#'  aheatmap(V.random)
+#'  estim.r2 <- nmf(k, 2:20, nrun=30)
+#'  estim.r2.random <- nmf(V.random, 2:20, nrun=30)
+#'  rss.rankplot(estim.r2, estim.r2.random)
+#'}
+rss.rankplot <- function(orig, random) {
+  rss.orig <- orig$measures$rss
+  rss.random <- random$measures$rss
+  df.o <- data.frame(rsschange=-diff(rss.orig), rank=2:length(rss.orig), type="orig")
+  df.r <- data.frame(rsschange=-diff(rss.random), rank=2:length(rss.random), type="randomized")
+  df<-rbind(df.o, df.r)
+  ggplot(df, aes(x=rank, y=rsschange, group=type, colour=type)) + geom_line() + geom_point()
+}

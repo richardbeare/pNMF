@@ -4,7 +4,7 @@
 \alias{PNMF}
 \title{Projective nonnegative matrix factorization based on euclidean distance.}
 \usage{
-PNMF(X, nmfMod, tol = 1e-05, maxIter = 500, verbose = FALSE)
+PNMF(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
 }
 \arguments{
 \item{X}{Input data matrix}

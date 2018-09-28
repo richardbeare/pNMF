@@ -97,7 +97,7 @@ Offset method (Badea, 2009, modification to Lee and Seung)
 
 ```
 
-### Brunet, random seed, 20 runs
+### Offset, random seed, 20 runs
 
 ```{r OffsetPlotRandom}
 
@@ -105,4 +105,16 @@ Offset method (Badea, 2009, modification to Lee and Seung)
 
 
 ## Projective methods
+
+```{r Projective, cache=TRUE}
+
+```
+
+```{r ProjectiveOrtho, cache=TRUE}
+
+```
+
+```{r ProjectiveKL, cache=TRUE}
+
+```
 
