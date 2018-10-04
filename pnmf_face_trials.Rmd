@@ -117,4 +117,81 @@ Offset method (Badea, 2009, modification to Lee and Seung)
 ```{r ProjectiveKL, cache=TRUE}
 
 ```
+### PNMF plots 
+
+```{r ProjectivePlotICA}
+
+```
+
+```{r ProjectivePlotNNDSVD}
+
+```
+
+```{r ProjectivePlotRandom}
+
+```
+
+### PNMFO plots 
+
+```{r ProjectiveOPlotICA}
+
+```
+
+```{r ProjectiveOPlotNNDSVD}
+
+```
+
+```{r ProjectiveOPlotRandom}
+
+```
+
+### PNMFKL plots 
+
+```{r ProjectiveKLPlotICA}
+
+```
+
+```{r ProjectiveKLPlotNNDSVD}
+
+```
+
+```{r ProjectiveKLPlotRandom}
+
+```
+
+## Summary so far
+
+Classical methods very dependent on seed choice. Some of the results look a bit crap.
+
+We'd like to avoid the random methods - need lots of repeats.
+
+ICA messes up some time.
+
+NNDSVD so far has used the default method, which does not "densify". Test
+a couple of the methods with the "average" option. Avoid the "random" option.
+
+## PNMF with average densify
+```{r PNMFAveSVD, cache=TRUE}
+
+```
+```{r PlotPNMFAveSVD}
+
+```
+
+## Finally - rank selection
+
+Note that I've used a hacked version of NMF to parallelise rank selection. Normally the 
+parallel part is within multiple runs, i.e. for random seeding, which we're trying to avoid.
+
+```{r RankSelectPNM}
+
+```
+
+```{r PlotRankPNMFO}
+
+```
+
+```{r PlotRankPNMF}
+
+```
 
