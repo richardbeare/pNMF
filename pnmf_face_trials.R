@@ -13,39 +13,58 @@ setNMFMethod("PNMFO", pNMF::PNMFO)
 
 data(faces)
 trialrank <- 16
+
+nn <- apply(faces, MARGIN=1, norm, type="2")
+faces <- sweep(faces, MARGIN=1, nn, "/")
+
+## parallel options
+oo <- list(parallel=10, verbose=TRUE)
+
+
 ## ---- RandomFaces ----
 ## Choose a random 16 faces
+set.seed(233)
 j <- sample_n(as.data.frame(faces), 16)
 
 ggdf <- NMFimage2df(j, 32, 32)
+rrng <- quantile(ggdf$Brightness, c(0.05, 0.95))
 
 ggplot(ggdf, aes(x=Var2, y=33-Var1, fill=Brightness)) +
-  geom_tile() + facet_wrap(~ID) + scale_fill_gradient(low="black", high="white") +
+  geom_tile() + facet_wrap(~ID) +
+  scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
   coord_fixed()
 
 ## ---- Choices ----
 nmfAlgorithm()
 nmfSeed()
 ## ---- Brunet ----
-faces.brunet.ica <- nmf(t(faces), rank = trialrank, method='brunet', seed="ica" )
-faces.brunet.nndsvd <- nmf(t(faces), rank = trialrank, method='brunet', seed="nndsvd" )
+faces.brunet.ica <- nmf(t(faces), rank = trialrank, method='brunet', seed="ica", nrun=1 )
+faces.brunet.nndsvd <- nmf(t(faces), rank = trialrank, method='brunet',
+                           seed="nndsvd", nrun=1 )
 
 ## ---- BrunetRandomSeed ----
-faces.brunet.random <- nmf(t(faces), rank = trialrank, method='brunet', seed="random", nrun=20 )
+faces.brunet.random <- nmf(t(faces), rank = trialrank, method='brunet', seed="random",
+                           nrun=20, .pbackend="mc", .options=oo)
 
 ## ---- Offset ----
-faces.offset.ica <- nmf(t(faces), rank = trialrank, method='offset', seed="ica" )
-faces.offset.nndsvd <- nmf(t(faces), rank = trialrank, method='offset', seed="nndsvd" )
+faces.offset.ica <- nmf(t(faces), rank = trialrank, method='offset', seed="ica", nrun=1 )
+faces.offset.nndsvd <- nmf(t(faces), rank = trialrank, method='offset',
+                           seed="nndsvd",
+                           nrun=1)
 
-faces.offset.random <- nmf(t(faces), rank = trialrank, method='offset', seed="random", nrun=20 )
+faces.offset.random <- nmf(t(faces), rank = trialrank, method='offset', seed="random",
+                           nrun=20, .pbackend="mc", .options=oo)
 
 ## ---- BrunetPlotICA ----
 plotNMFBasis <- function(ff) {
   faces.basis.brunet <- NMF::basis(ff)
 
   ggfbb <- NMFimage2df(t(faces.basis.brunet), 32,32)
+  rrng <- quantile(ggdf$Brightness, c(0.01, 0.99))
+
   ggplot(ggfbb, aes(x=Var2, y=33-Var1, fill=Brightness)) +
-    geom_tile() + facet_wrap(~ID) + scale_fill_gradient(low="black", high="white") +
+    geom_tile() + facet_wrap(~ID) +
+    scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
     coord_fixed()
 }
 plotNMFBasis(faces.brunet.ica)
@@ -56,13 +75,7 @@ plotNMFBasis(faces.brunet.nndsvd)
 plotNMFBasis(faces.brunet.random)
 
 ## ---- OffsetPlotICA ----
-faces.basis.offset <- NMF::basis(faces.offset.ica)
-
-ggfbb <- NMFimage2df(t(faces.basis.offset), 32,32)
-ggplot(ggfbb, aes(x=Var2, y=33-Var1, fill=Brightness)) +
-  geom_tile() + facet_wrap(~ID) + scale_fill_gradient(low="black", high="white") +
-  coord_fixed()
-
+plotNMFBasis(faces.brunet.ica)
 ## ---- OffsetPlotNNDSVD ----
 plotNMFBasis(faces.offset.nndsvd)
 
@@ -70,22 +83,25 @@ plotNMFBasis(faces.offset.nndsvd)
 plotNMFBasis(faces.offset.random)
 
 ## ---- Projective ----
-faces.pnmf.ica <- nmf(t(faces), rank = trialrank, method='PNMF', seed="ica" )
-faces.pnmf.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMF', seed="nndsvd" )
+faces.pnmf.ica <- nmf(t(faces), rank = trialrank, method='PNMF', seed="ica", nrun=1 )
+faces.pnmf.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMF', seed="nndsvd", nrun=1 )
 
-faces.pnmf.random <- nmf(t(faces), rank = trialrank, method='PNMF', seed="random", nrun=20 )
+faces.pnmf.random <- nmf(t(faces), rank = trialrank, method='PNMF', seed="random",
+                         nrun=20, .pbackend="mc", .options=oo )
 
 ## ---- ProjectiveOrtho ----
-faces.pnmfo.ica <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="ica" )
-faces.pnmfo.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="nndsvd" )
+faces.pnmfo.ica <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="ica", nrun=1 )
+faces.pnmfo.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="nndsvd", nrun=1 )
 
-faces.pnmfo.random <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="random", nrun=20 )
+faces.pnmfo.random <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="random",
+                          nrun=20, .pbackend="mc", .options=oo  )
 
 ## ---- ProjectiveKL ----
-faces.pnmfkl.ica <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="ica" )
-faces.pnmfkl.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="nndsvd" )
+faces.pnmfkl.ica <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="ica", nrun=1 )
+faces.pnmfkl.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="nndsvd", nrun=1 )
 
-faces.pnmfkl.random <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="random", nrun=20 )
+faces.pnmfkl.random <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="random",
+                           nrun=20, .pbackend="mc", .options=oo)
 
 
 ## ---- ProjectivePlotICA ----
@@ -118,10 +134,12 @@ plotNMFBasis(faces.pnmfkl.random)
 ## ---- PNMFAveSVD ----
 faces.pnmfo.nndsvdA <- nmf(t(faces), rank = trialrank,
                            method='PNMFO',
-                           seed=list(method="nndsvd", densify="average"))
+                           seed=list(method="nndsvd", densify="average"),
+                           nrun=1)
 faces.pnmf.nndsvdA <- nmf(t(faces), rank = trialrank,
                          method='PNMF',
-                         seed=list(method="nndsvd", densify="average") )
+                         seed=list(method="nndsvd", densify="average"),
+                         nrun=1)
 
 ## ---- PlotPNMFAveSVD ----
 plotNMFBasis(faces.pnmfo.nndsvdA)
