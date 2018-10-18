@@ -195,3 +195,6 @@ parallel part is within multiple runs, i.e. for random seeding, which we're tryi
 
 ```
 
+## Face compression
+
+What does the reconstruction look like from 20 components?

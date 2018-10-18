@@ -185,4 +185,68 @@ rss.rankplot(faces.pnmfo.nndsvdA.rs, faces.pnmfo.nndsvdA.rs.rand)
 ## ---- PlotRankPNMF ----
 rss.rankplot(faces.pnmf.nndsvdA.rs, faces.pnmf.nndsvdA.rs.rand)
 
+## ---- Reconstruction ----
+## using trial rank
+compressedFaces <- fitted(faces.pnmf.nndsvdA)
+which.faces <- attr(j, "row.names")
+
+ggdf <- NMFimage2df(t(compressedFaces[,which.faces]), 32, 32)
+
+rrng <- quantile(ggdf$Brightness, c(0.05, 0.95))
+
+ggplot(ggdf, aes(x=Var2, y=33-Var1, fill=Brightness)) +
+  geom_tile() + facet_wrap(~ID) +
+  scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
+  coord_fixed()
+
+## ---- PNMFAveSVD ----
+## rank of 30 looks OK
+faces.pnmfo.nndsvdA <- nmf(t(faces), rank = 30,
+                           method='PNMFO',
+                           seed=list(method="nndsvd", densify="average"),
+                           nrun=1)
+faces.pnmf.nndsvdA <- nmf(t(faces), rank = 30,
+                          method='PNMF',
+                          seed=list(method="nndsvd", densify="average"),
+                          nrun=1)
+
+## What about novel data? Don't need it for the structural covariance
+compressedFaces <- fitted(faces.pnmf.nndsvdA)
+which.faces <- attr(j, "row.names")
+
+ggdf <- NMFimage2df(t(compressedFaces[,which.faces]), 32, 32)
+
+rrng <- quantile(ggdf$Brightness, c(0.05, 0.95))
+
+ggplot(ggdf, aes(x=Var2, y=33-Var1, fill=Brightness)) +
+  geom_tile() + facet_wrap(~ID) +
+  scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
+  coord_fixed()
+
+compressedFaces <- fitted(faces.pnmfo.nndsvdA)
+which.faces <- attr(j, "row.names")
+
+ggdf <- NMFimage2df(t(compressedFaces[,which.faces]), 32, 32)
+
+rrng <- quantile(ggdf$Brightness, c(0.05, 0.95))
+
+ggplot(ggdf, aes(x=Var2, y=33-Var1, fill=Brightness)) +
+  geom_tile() + facet_wrap(~ID) +
+  scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
+  coord_fixed()
+
+## ---- NovelData ----
+
+## Projective NMF is special, because H = t(W)*X
+## X ~ W t(W) X
+## Thus, suppose we look at the coefficients for our random faces
+H <- coef(faces.pnmf.nndsvdA)
+
+W <- basis(faces.pnmf.nndsvdA)
+
+aface <- 1964
+
+H[,aface]
+
+t(W) %*% t(faces[1964,,drop=FALSE])
 ## ---- Last ----
