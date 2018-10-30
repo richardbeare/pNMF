@@ -185,4 +185,18 @@ rss.rankplot(faces.pnmfo.nndsvdA.rs, faces.pnmfo.nndsvdA.rs.rand)
 ## ---- PlotRankPNMF ----
 rss.rankplot(faces.pnmf.nndsvdA.rs, faces.pnmf.nndsvdA.rs.rand)
 
+## ---- ParallelRank ----
+## The NMF package does lots of stuff about parallel computation to
+## make the random seeding workflow faster. This doesn't help
+## when the seeding is constant, but we want to check rank.
+## The answer is to use mclapply as follows
+nmfwrapper <- function(rnk,data, methd, sd) {
+  res <- nmf(data, rank=rnk, method=methd, seed=sd, nrun=1)
+  return(res)
+}
+multinmf <- mclapply(2:20, nmfwrapper, data=t(faces), methd='PNMFO',
+                     sd=list(method="nndsvd", densify="average"), mc.cores=10)
+
+multinmf.rss <- sapply(multinmf, rss, t(faces))
+# Then the same for the randomized data.
 ## ---- Last ----
