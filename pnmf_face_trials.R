@@ -7,6 +7,7 @@ library(pNMF)
 setNMFMethod("PNMF", pNMF::PNMF)
 setNMFMethod("PNMFKL", pNMF::PNMFKL)
 setNMFMethod("PNMFO", pNMF::PNMFO)
+setNMFMethod("PNMFO2", pNMF::PNMFO2)
 
 # projective gradient for comparison
 #setNMFMethod("PGNMF", hNMF::PGNMF)

@@ -2,9 +2,12 @@
 % Please edit documentation in R/pnmf.R
 \name{PNMFO}
 \alias{PNMFO}
+\alias{PNMFO2}
 \title{Projective orthonormal nonnegative matrix factorization based on euclidean distance.}
 \usage{
 PNMFO(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
+
+PNMFO2(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
 }
 \arguments{
 \item{X}{Input data matrix}
@@ -27,7 +30,16 @@ Projective orthonormal nonnegative matrix factorization based on euclidean dista
 Implementation of "Linear and Nonlinear Projective Nonnegative Matrix Factorization",
 Z. Yang and E. Oja, IEEE Transactions on Neural Networks. Derived from
 matlab code by Z. Yang, https://sites.google.com/site/zhirongyangcs/pnmf.
+
+The PNMFO2 version uses a different ordering of matrix operations that is slower, as
+more happens in the loop, but reduces the maximum matrix size. No need for a
+features x features matrix
 }
+\section{Functions}{
+\itemize{
+\item \code{PNMFO2}: Projective orthonormal nonnegative matrix factorization based on euclidean distance.
+}}
+
 \examples{
 library(NMF)
 setNMFMethod("PNMFO", pNMF::PNMFO)

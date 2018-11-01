@@ -69,6 +69,12 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
 #' @details Implementation of "Linear and Nonlinear Projective Nonnegative Matrix Factorization",
 #' Z. Yang and E. Oja, IEEE Transactions on Neural Networks. Derived from
 #' matlab code by Z. Yang, https://sites.google.com/site/zhirongyangcs/pnmf.
+#'
+#' The PNMFO2 version uses a different ordering of matrix operations that is slower, as
+#' more happens in the loop, but reduces the maximum matrix size. No need for a
+#' features x features matrix
+#'
+#' @aliases PNMFO2
 #' @param X Input data matrix
 #' @param nmfMod NMF model from the NMF package
 #' @param tol tolerance for stopping criteria
@@ -111,6 +117,42 @@ PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
     W_old <- W
 
     W <- W * (XX %*% W)/ (W %*% (crossprod(W, XX)%*%W))
+    W <- W/norm(W, "2")
+    diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
+    if (diffW < tol) {
+      if (verbose) {
+        cat("Convergence in ", iter, " iterations\n")
+      }
+      break
+    }
+  }
+  gc()
+  NMF::basis(nmfMod) <- W
+  NMF::coef(nmfMod) <- crossprod(W, X)
+  return(nmfMod)
+}
+
+
+#' @describeIn PNMFO Projective orthonormal nonnegative matrix factorization based on euclidean distance.
+#' @export
+PNMFO2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+  # Initialization
+  #startTime <- proc.time()[3]
+  W <- NMF::basis(nmfMod)
+  #H <- NMF::coef(nmfMod)
+  err <- rep(0, times = maxIter+1)
+  err_diff <- Inf
+
+  # Keep initial W0 for divergence criterion
+  W0 <- W
+  hasDiverged <- FALSE
+
+  for (iter in 1:maxIter) {
+    W_old <- W
+
+    XtXW <- X %*% crossprod(X, W)
+    UU <- XtXW/(W %*% crossprod(W, XtXW))
+    W <- W * UU
     W <- W/norm(W, "2")
     diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
     if (diffW < tol) {
