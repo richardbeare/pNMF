@@ -64,6 +64,41 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
   return(nmfMod)
 }
 
+
+#' @describeIn PNMF Projective nonnegative matrix factorization based on euclidean distance.
+#' @export
+PNMF2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+  # Initialization
+  #startTime <- proc.time()[3]
+  W <- NMF::basis(nmfMod)
+  #H <- NMF::coef(nmfMod)
+  err <- rep(0, times = maxIter+1)
+  err_diff <- Inf
+
+  # Keep initial W0 for divergence criterion
+  W0 <- W
+  hasDiverged <- FALSE
+  for (iter in 1:maxIter) {
+    W_old <- W
+
+    XtXW <- X %*% crossprod(X, W)
+
+    W <- W * XtXW / (tcrossprod(W) %*% XtXW + XtXW %*% crossprod(W))
+    W <- W/norm(W, "2")
+    diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
+    if (diffW < tol) {
+      if (verbose) {
+        cat("Convergence in ", iter, " iterations\n")
+      }
+      break
+    }
+  }
+  gc()
+  NMF::basis(nmfMod) <- W
+  NMF::coef(nmfMod) <- crossprod(W, X)
+  return(nmfMod)
+}
+
 #' Projective orthonormal nonnegative matrix factorization based on euclidean distance.
 #'
 #' @details Implementation of "Linear and Nonlinear Projective Nonnegative Matrix Factorization",

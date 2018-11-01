@@ -2,6 +2,7 @@
 
 export(NMFimage2df)
 export(PNMF)
+export(PNMF2)
 export(PNMFKL)
 export(PNMFO)
 export(PNMFO2)

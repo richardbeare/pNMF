@@ -5,6 +5,7 @@ library(pNMF)
 #library(hNMF)
 ## Register the new routines
 setNMFMethod("PNMF", pNMF::PNMF)
+setNMFMethod("PNMF2", pNMF::PNMF2)
 setNMFMethod("PNMFKL", pNMF::PNMFKL)
 setNMFMethod("PNMFO", pNMF::PNMFO)
 setNMFMethod("PNMFO2", pNMF::PNMFO2)

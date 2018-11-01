@@ -2,9 +2,12 @@
 % Please edit documentation in R/pnmf.R
 \name{PNMF}
 \alias{PNMF}
+\alias{PNMF2}
 \title{Projective nonnegative matrix factorization based on euclidean distance.}
 \usage{
 PNMF(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
+
+PNMF2(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
 }
 \arguments{
 \item{X}{Input data matrix}
@@ -28,6 +31,11 @@ Implementation of "Linear and Nonlinear Projective Nonnegative Matrix Factorizat
 Z. Yang and E. Oja, IEEE Transactions on Neural Networks. Derived from
 matlab code by Z. Yang, https://sites.google.com/site/zhirongyangcs/pnmf.
 }
+\section{Functions}{
+\itemize{
+\item \code{PNMF2}: Projective nonnegative matrix factorization based on euclidean distance.
+}}
+
 \examples{
 library(NMF)
 setNMFMethod("PNMF", pNMF::PNMF)
