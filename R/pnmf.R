@@ -30,7 +30,7 @@
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 #'}
 
-PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol=1e-10) {
   # Initialization
   #startTime <- proc.time()[3]
   W <- NMF::basis(nmfMod)
@@ -54,15 +54,19 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
     #diffW = norm(W_old-W, 'fro') / norm(W_old, 'fro');
     W <- W * (XX %*% W)/ (W %*% crossprod(W, (XX%*%W)) + XX %*% W %*% crossprod(W))
     W <- W/norm(W, "2")
+    W[W < zerotol] <- 0
     diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
     if (diffW < tol) {
-      if (verbose) {
-        cat("Convergence in ", iter, " iterations\n")
+      if (verboseN) {
+        message("Convergence in ", iter, " iterations\n")
       }
       break
     }
   }
   gc()
+  if (verboseN) {
+    message(iter, " Iterations used")
+  }
   NMF::basis(nmfMod) <- W
   NMF::coef(nmfMod) <- crossprod(W, X)
   return(nmfMod)
@@ -112,7 +116,7 @@ function() {
 
   ## same tests with openblas
   ## top shows it cranking along with lots of cores
-  system.time(replicate(200, h <- X %*% t(X)))
+  # system.time(replicate(200, h <- X %*% t(X)))
   #user  system elapsed
   #75.602  44.937  16.315
 
@@ -170,7 +174,7 @@ function() {
 
 #' @describeIn PNMF Projective nonnegative matrix factorization based on euclidean distance.
 #' @export
-PNMF2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+PNMF2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol=1e-10) {
   # Initialization
   #startTime <- proc.time()[3]
   W <- NMF::basis(nmfMod)
@@ -188,15 +192,20 @@ PNMF2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
 
     W <- W * XtXW / (W %*% crossprod(W, XtXW) + XtXW %*% crossprod(W))
     W <- W/norm(W, "2")
+    W[W < zerotol] <- 0
     diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
     if (diffW < tol) {
-      if (verbose) {
-        cat("Convergence in ", iter, " iterations\n")
+      if (verboseN) {
+        message("Convergence in ", iter, " iterations\n")
       }
       break
     }
   }
   gc()
+  if (verboseN) {
+    message(iter, " Iterations used")
+  }
+
   NMF::basis(nmfMod) <- W
   NMF::coef(nmfMod) <- crossprod(W, X)
   return(nmfMod)
@@ -239,7 +248,7 @@ PNMF2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 #'}
 
-PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol=1e-10) {
   # Initialization
   #startTime <- proc.time()[3]
   W <- NMF::basis(nmfMod)
@@ -256,13 +265,17 @@ PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
 
     W <- W * (XX %*% W)/(W %*% crossprod(W, (XX%*%W)))
     W <- W/norm(W, "2")
+    W[W < zerotol] <- 0
     diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
     if (diffW < tol) {
-      if (verbose) {
-        cat("Convergence in ", iter, " iterations\n")
+      if (verboseN) {
+        message("Convergence in ", iter, " iterations\n")
       }
       break
     }
+  }
+  if (verboseN) {
+    message(iter, " Iterations used")
   }
   gc()
   NMF::basis(nmfMod) <- W
@@ -273,7 +286,7 @@ PNMFO <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
 
 #' @describeIn PNMFO Projective orthonormal nonnegative matrix factorization based on euclidean distance.
 #' @export
-PNMFO2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+PNMFO2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol=1e-10) {
   # Initialization
   #startTime <- proc.time()[3]
   W <- NMF::basis(nmfMod)
@@ -292,13 +305,17 @@ PNMFO2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
     UU <- XtXW/(W %*% crossprod(W, XtXW))
     W <- W * UU
     W <- W/norm(W, "2")
+    W[W < zerotol] <- 0
     diffW <- norm(W_old-W, 'F') / norm(W_old, 'F')
     if (diffW < tol) {
-      if (verbose) {
-        cat("Convergence in ", iter, " iterations\n")
+      if (verboseN) {
+        message("Convergence in ", iter, " iterations\n")
       }
       break
     }
+  }
+  if (verboseN) {
+    message(iter, " Iterations used")
   }
   gc()
   NMF::basis(nmfMod) <- W
@@ -336,7 +353,7 @@ PNMFO2 <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
 #' estim.r2.random <- nmf(V.random, 2:20,  method="PNMF", nrun=30)
 #'}
 #'
-PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
+PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol=1e-10) {
   W <- NMF::basis(nmfMod)
   Xsum <- rowSums(X)
   dim(Xsum) <- c(nrow(X), 1)
@@ -357,13 +374,17 @@ PNMFKL <- function(X, nmfMod, tol = 1e-5, maxIter = 5000, verbose=FALSE) {
     XW <- as.vector(crossprod(Xsum, W))
     bsxfunplus <- sweep(bsxfuntimes, MARGIN=2, STATS=XW, FUN="+")
     W <- W * sqrt((Z %*% crossprod(X, W) + X %*% crossprod(Z, W)))/bsxfunplus
+    W[W < zerotol] <- 0
     diffW <- norm(W_old - W, "F")/norm(W_old, "F")
     if (diffW<tol) {
-      if (verbose) {
-        cat("Converged after ", iter , " steps.\n")
+      if (verboseN) {
+        message("Converged after ", iter , " steps.\n")
       }
       break;
     }
+  }
+  if (verboseN) {
+    message(iter, " Iterations used")
   }
   gc()
   NMF::basis(nmfMod) <- W

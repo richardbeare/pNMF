@@ -62,7 +62,7 @@ plotNMFBasis <- function(ff) {
   faces.basis.brunet <- NMF::basis(ff)
 
   ggfbb <- NMFimage2df(t(faces.basis.brunet), 32,32)
-  rrng <- quantile(ggdf$Brightness, c(0.01, 0.99))
+  rrng <- quantile(ggfbb$Brightness, c(0.01, 0.99))
 
   ggplot(ggfbb, aes(x=Var2, y=33-Var1, fill=Brightness)) +
     geom_tile() + facet_wrap(~ID) +
@@ -85,24 +85,24 @@ plotNMFBasis(faces.offset.nndsvd)
 plotNMFBasis(faces.offset.random)
 
 ## ---- Projective ----
-faces.pnmf.ica <- nmf(t(faces), rank = trialrank, method='PNMF', seed="ica", nrun=1 )
-faces.pnmf.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMF', seed="nndsvd", nrun=1 )
+faces.pnmf.ica <- nmf(t(faces), rank = trialrank, method='PNMF', seed="ica", maxIter=50000, nrun=1 )
+faces.pnmf.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMF', seed="nndsvd", maxIter=50000, nrun=1 )
 
 faces.pnmf.random <- nmf(t(faces), rank = trialrank, method='PNMF', seed="random",
-                         nrun=20, .pbackend="mc", .options=oo )
+                         nrun=20, .pbackend="mc", maxIter=50000, .options=oo )
 
 ## ---- ProjectiveOrtho ----
-faces.pnmfo.ica <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="ica", nrun=1 )
-faces.pnmfo.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="nndsvd", nrun=1 )
+faces.pnmfo.ica <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="ica", maxIter=50000, nrun=1 )
+faces.pnmfo.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="nndsvd", maxIter=50000, nrun=1 )
 
 faces.pnmfo.random <- nmf(t(faces), rank = trialrank, method='PNMFO', seed="random",
-                          nrun=20, .pbackend="mc", .options=oo  )
+                          nrun=20, .pbackend="mc", .options=oo, maxIter=50000  )
 
 ## ---- ProjectiveKL ----
-faces.pnmfkl.ica <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="ica", nrun=1 )
-faces.pnmfkl.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="nndsvd", nrun=1 )
+faces.pnmfkl.ica <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="ica", maxIter=50000, nrun=1 )
+faces.pnmfkl.nndsvd <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="nndsvd", maxIter=50000, nrun=1 )
 
-faces.pnmfkl.random <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="random",
+faces.pnmfkl.random <- nmf(t(faces), rank = trialrank, method='PNMFKL', seed="random", maxIter=50000,
                            nrun=20, .pbackend="mc", .options=oo)
 
 
