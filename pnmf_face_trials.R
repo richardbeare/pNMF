@@ -242,15 +242,35 @@ ggplot(ggdf, aes(x=Var2, y=33-Var1, fill=Brightness)) +
 ## Projective NMF is special, because H = t(W)*X
 ## X ~ W t(W) X
 ## Thus, suppose we look at the coefficients for our random faces
-H <- coef(faces.pnmf.nndsvdA)
+facesTraining <- faces[1:1500, ]
+faces.pnmfoModel <- nmf(t(facesTraining), rank = 30,
+                        method='PNMFO',
+                        seed=list(method="nndsvd", densify="average"),
+                        nrun=1)
+H <- coef(faces.pnmfoModel)
 
-W <- basis(faces.pnmf.nndsvdA)
+W <- basis(faces.pnmfoModel)
 
 aface <- 1964
+ggdf <- NMFimage2df(faces[aface, , drop=FALSE], 32, 32)
+rrng <- quantile(ggdf$Brightness, c(0.05, 0.95))
 
-H[,aface]
+ggplot(ggdf, aes(x=Var2, y=33-Var1, fill=Brightness)) +
+  geom_tile() +
+  scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
+  coord_fixed()
 
-t(W) %*% t(faces[1964,,drop=FALSE])
+
+
+## create the new H for the novel data
+facemodel <- t(W %*% (t(W) %*% t(faces[aface,,drop=FALSE])))
+
+ggdf2 <- NMFimage2df(rbind(faces[aface, , drop=FALSE], facemodel), 32, 32)
+
+ggplot(ggdf2, aes(x=Var2, y=33-Var1, fill=Brightness)) +
+  geom_tile() + facet_wrap(~ID) +
+  scale_fill_gradient(low="black", high="white", limits=rrng, oob=scales::squish) +
+  coord_fixed()
 
 ## ---- ParallelRank ----
 ## The NMF package does lots of stuff about parallel computation to
