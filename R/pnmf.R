@@ -43,9 +43,10 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol
   hasDiverged <- FALSE
   XX <- tcrossprod(X)
 
-  bigW <<- W
-  bigX <<- X
-  bigXX <<- XX
+  # for testing algebra speed
+  #bigW <<- W
+  #bigX <<- X
+  #bigXX <<- XX
   for (iter in 1:maxIter) {
     W_old <- W
     # matlab stuff
