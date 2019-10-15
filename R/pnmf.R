@@ -50,6 +50,7 @@ PNMF <- function (X, nmfMod, tol = 1e-5, maxIter = 5000, verboseN=FALSE, zerotol
   for (iter in 1:maxIter) {
     W_old <- W
     # matlab stuff
+    # Note that the factor of 2 in the paper isn't here
     #W = W .* (XX*W) ./ (W*(W'*XX*W) + XX*W*(W'*W));
     #W = W ./ norm(W);
     #diffW = norm(W_old-W, 'fro') / norm(W_old, 'fro');
