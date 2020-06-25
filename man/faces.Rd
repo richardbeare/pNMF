@@ -4,8 +4,10 @@
 \name{faces}
 \alias{faces}
 \title{Face data base from the matlab pnmf package}
-\format{Faces are 32x32 images, dataset is 2049 rows,
-1024 (=32x32) columns}
+\format{
+Faces are 32x32 images, dataset is 2049 rows,
+1024 (=32x32) columns
+}
 \usage{
 faces
 }

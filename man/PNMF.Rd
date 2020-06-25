@@ -5,9 +5,16 @@
 \alias{PNMF2}
 \title{Projective nonnegative matrix factorization based on euclidean distance.}
 \usage{
-PNMF(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
+PNMF(X, nmfMod, tol = 1e-05, maxIter = 5000, verboseN = FALSE, zerotol = 1e-10)
 
-PNMF2(X, nmfMod, tol = 1e-05, maxIter = 5000, verbose = FALSE)
+PNMF2(
+  X,
+  nmfMod,
+  tol = 1e-05,
+  maxIter = 5000,
+  verboseN = FALSE,
+  zerotol = 1e-10
+)
 }
 \arguments{
 \item{X}{Input data matrix}
